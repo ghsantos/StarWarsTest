@@ -13,10 +13,13 @@ import Details from './src/screens/Details';
 
 const store = configureStore();
 
-const AppNavigator = createStackNavigator({
-  Home,
-  Details,
-});
+const AppNavigator = createStackNavigator(
+  {
+    Home,
+    Details,
+  },
+  { defaultNavigationOptions: { header: null } }
+);
 
 const AppContainer = createAppContainer(AppNavigator);
 

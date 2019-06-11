@@ -26,9 +26,7 @@ function* fetchPeoples() {
 
 function* fetchPeople(action) {
   try {
-    yield call(console.log, action.id);
     const { data: people } = yield call(getPeople, action.id);
-    yield call(console.log, people);
 
     const homeworldID = people.homeworld.split(/\/(\d+)\//)[1];
 

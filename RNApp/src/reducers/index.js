@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-const INITIAL_STATE = {
+const INITIAL_PEOPLES_STATE = {
   peoples: [],
   page: 1,
   count: null,
@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   done: false,
 };
 
-function peoplesReducer(state = INITIAL_STATE, action) {
+function peoplesReducer(state = INITIAL_PEOPLES_STATE, action) {
   switch (action.type) {
     case 'GET_PEOPLES':
       return { ...state, loading: true };
@@ -34,8 +34,42 @@ function peoplesReducer(state = INITIAL_STATE, action) {
   }
 }
 
+const INITIAL_PEOPLE_STATE = {
+  people: {},
+  loading: false,
+  error: false,
+  errorMessage: '',
+};
+
+function peopleReducer(state = INITIAL_PEOPLE_STATE, action) {
+  switch (action.type) {
+    case 'GET_PEOPLE':
+      return { ...state, loading: true };
+
+    case 'PEOPLE_RECEIVED':
+      return {
+        ...state,
+        people: action.people,
+        loading: false,
+        error: false,
+      };
+
+    case 'ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        errorMessage: action.errorMessage,
+      };
+
+    default:
+      return state;
+  }
+}
+
 const appReducer = combineReducers({
   peoplesReducer,
+  peopleReducer,
 });
 
 export default appReducer;

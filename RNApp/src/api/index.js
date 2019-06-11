@@ -1,13 +1,17 @@
 const axios = require('axios');
 
-const api = 'https://swapi.co/api/people';
+const api = 'https://swapi.co/api';
 
 function getPeoples(page) {
-  return axios.get(`${api}/?page=${page}`);
+  return axios.get(`${api}/people/?page=${page}`);
 }
 
 function getPeople(id) {
-  return axios.get(`${api}/${id}`);
+  return axios.get(`${api}/people/${id}`);
 }
 
-export { getPeoples, getPeople };
+function getPlanet(id) {
+  return axios.get(`${api}/planets/${id}`);
+}
+
+export { getPeoples, getPeople, getPlanet };

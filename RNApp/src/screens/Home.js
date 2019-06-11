@@ -2,10 +2,23 @@
 
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import { Header, Card } from 'react-native-elements';
 
-const Home = ({ peoples, getPeoples, loading, done }) => {
+const Home = ({
+  peoples,
+  getPeoples,
+  loading,
+  done,
+  getPeople,
+  navigation,
+}) => {
   useEffect(() => {
     getPeoples();
   }, [getPeoples]);
@@ -16,7 +29,16 @@ const Home = ({ peoples, getPeoples, loading, done }) => {
     }
   };
 
-  const renderItem = ({ item }) => <Card title={item.name} />;
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => {
+        getPeople(item.id);
+        navigation.navigate('Details');
+      }}
+    >
+      <Card title={item.name} />
+    </TouchableOpacity>
+  );
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -59,6 +81,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     getPeoples: () => dispatch({ type: 'GET_PEOPLES' }),
+    getPeople: id => dispatch({ type: 'GET_PEOPLE', id }),
   };
 };
 

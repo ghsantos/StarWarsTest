@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
   Col,
@@ -7,6 +7,10 @@ import {
   CardHeader,
   Card,
   Container,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Navbar,
   NavbarBrand,
   Row,
@@ -14,11 +18,30 @@ import {
 } from 'reactstrap';
 import InfiniteScroll from 'react-infinite-scroller';
 
-const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
+const Home = ({
+  peoples,
+  peoplesLoading,
+  done,
+  getPeoples,
+  people,
+  peopleLoading,
+  getPeople,
+}) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   const handleGetPeoples = () => {
-    if (!loading && !done) {
+    if (!peoplesLoading && !done) {
       getPeoples();
     }
+  };
+
+  const handleGetPeople = id => {
+    getPeople(id);
+    toggleModal();
   };
 
   return (
@@ -27,6 +50,32 @@ const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
         <NavbarBrand href="/">Star Wars</NavbarBrand>
       </Navbar>
 
+      <Modal isOpen={modalVisible} toggle={toggleModal}>
+        {peopleLoading && (
+          <ModalBody>
+            <Spinner color="dark" />
+          </ModalBody>
+        )}
+
+        {!peopleLoading && (
+          <>
+            <ModalHeader toggle={toggleModal}>{people.name}</ModalHeader>
+            <ModalBody>
+              Birth year: {people.birth_year}
+              <br />
+              Mass: {people.mass}
+              <br />
+              Height: {people.height}
+              <br />
+              Homeworld: {people.homeworld}
+            </ModalBody>
+            <ModalFooter>
+              <Button onClick={toggleModal}>OK</Button>
+            </ModalFooter>
+          </>
+        )}
+      </Modal>
+
       <InfiniteScroll pageStart={0} loadMore={handleGetPeoples} hasMore={!done}>
         <Row className="content">
           {peoples.map(people => (
@@ -34,7 +83,9 @@ const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
               <Card style={{ margin: '15px 0' }}>
                 <CardHeader tag="h4">{people.name}</CardHeader>
                 <CardBody>
-                  <Button>Details</Button>
+                  <Button onClick={() => handleGetPeople(people.id)}>
+                    Details
+                  </Button>
                 </CardBody>
               </Card>
             </Col>
@@ -42,7 +93,7 @@ const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
         </Row>
       </InfiniteScroll>
 
-      {loading && <Spinner color="dark" />}
+      {peoplesLoading && <Spinner color="dark" />}
     </Container>
   );
 };
@@ -50,8 +101,10 @@ const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
 const mapStateToProps = state => {
   return {
     peoples: state.peoplesReducer.peoples,
-    loading: state.peoplesReducer.loading,
+    peoplesLoading: state.peoplesReducer.loading,
     done: state.peoplesReducer.done,
+    people: state.peopleReducer.people,
+    peopleLoading: state.peopleReducer.loading,
   };
 };
 

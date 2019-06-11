@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import {
   Col,
@@ -12,11 +12,14 @@ import {
   Row,
   Spinner,
 } from 'reactstrap';
+import InfiniteScroll from 'react-infinite-scroller';
 
 const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
-  useEffect(() => {
-    getPeoples();
-  }, [getPeoples]);
+  const handleGetPeoples = () => {
+    if (!loading && !done) {
+      getPeoples();
+    }
+  };
 
   return (
     <Container>
@@ -24,18 +27,20 @@ const Home = ({ peoples, loading, done, getPeoples, getPeople }) => {
         <NavbarBrand href="/">Star Wars</NavbarBrand>
       </Navbar>
 
-      <Row className="content">
-        {peoples.map(people => (
-          <Col key={people.id} xs="12" sm="6">
-            <Card style={{ margin: '0 20px 20px 0' }}>
-              <CardHeader tag="h4">{people.name}</CardHeader>
-              <CardBody>
-                <Button>Details</Button>
-              </CardBody>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+      <InfiniteScroll pageStart={0} loadMore={handleGetPeoples} hasMore={!done}>
+        <Row className="content">
+          {peoples.map(people => (
+            <Col key={people.id} xs="12" sm="6">
+              <Card style={{ margin: '15px 0' }}>
+                <CardHeader tag="h4">{people.name}</CardHeader>
+                <CardBody>
+                  <Button>Details</Button>
+                </CardBody>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </InfiniteScroll>
 
       {loading && <Spinner color="dark" />}
     </Container>
